@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureServicePrincipalWeb", "AzureServicePrincipalWeb\AzureServicePrincipalWeb.csproj", "{ECB095A0-0E51-42BB-B63E-4B4DCCF045DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECB095A0-0E51-42BB-B63E-4B4DCCF045DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECB095A0-0E51-42BB-B63E-4B4DCCF045DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECB095A0-0E51-42BB-B63E-4B4DCCF045DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECB095A0-0E51-42BB-B63E-4B4DCCF045DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

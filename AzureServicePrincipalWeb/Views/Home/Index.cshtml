@@ -1,0 +1,105 @@
+﻿@model AzureServicePrincipalWeb.Models.ServicePrincipalModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@using (Html.BeginForm("PostIndex", "Home"))
+{
+    @*@Html.AntiForgeryToken()*@
+
+    <div class="form-horizontal">
+        @if (Model.ShowSpDetails)
+        {
+            <h4>Creating a new Service Principal in your Directory</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AppIdUri, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.AppIdUri, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AppIdUri, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TenantId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TenantId, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TenantId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AppId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.AppId)
+                </div>
+            </div>
+        }
+        else
+        {
+            <h4>Ask for additional user consent needed!</h4>
+            <hr/>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConsentAzureAdTenantDomainOrId, "Tenant ID/Domain", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ConsentAzureAdTenantDomainOrId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ConsentAzureAdTenantDomainOrId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserMessage, htmlAttributes: new { @class = "control-label col-md-2", @style = "white-space: pre-line" })
+            <div class="col-md-10">
+                @foreach(var s in Model.UserMessage.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    <p>@s</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" style='visibility: @(Model.SubmitSpEnabled ? "visible" : "hidden")' formaction="/Home/SubmitServicePrincipal" />
+                <input type="submit" value="Init Consent" class="btn" style='visibility: @(Model.SubmitConsentEnabled ? "visible": "hidden")' formaction="/Home/InitiateConsent" />
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    function redeemCodes() {
+        $.ajax(
+                {
+                    url: "/Home/RedeemToken",
+                    method: "POST"
+                }
+            ).done(
+                function () {
+                    alert('done!');
+                });
+    }
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
