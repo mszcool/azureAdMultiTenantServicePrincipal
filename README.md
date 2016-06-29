@@ -11,10 +11,12 @@ To use it follow these steps:
   * Note: SSL/https is a must, otherwise the sign-in will fail!
 
 2. Accept the consent dialog when signing into the application!
+  
   ![Usage01](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure01-Sign-In.png)
 
-3. Enter the data and hit save to create a new service principal.
+3. Enter the data and hit save to create a new service principal. 
    * __Important Notes:__ 
+     * After you hit save, the __AppId__ will be displayed. For using the Service Principal with e.g. Azure xPlat CLI you need the AppId, the TenantId and the password to sign-in!
      * A Serivce Principal is always attached to an App-Object in Azure AD. Hence an App will be created as well.
      * If you enter the URI of an existing App, DisplayName will be ignored and the existing App will be updated!
      * If both, the App and Service Principal did exist, only a new password will be added!
@@ -22,14 +24,20 @@ To use it follow these steps:
    * __DisplayName:__ that's the name of the App that is created to back the service principal in your AD. You'll see that in your Azure AD Portal.
    * __AppIdUri:__ the unique URI for identifying the App in your directory.
    * __Password:__ a password to use for the service principal.
+   
    ![Usage02](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure02-EnterData.png)
 
 4. The service principal web app tries to use your default tenant. If you want to switch the tenant, an additional consent is needed. Click the link 'Consent for different Tenant" below the Tenant ID! 
   * This will redirect you to a view that allows entering a different tenant domain or ID.
   * You can use both, the tenant ID (00000000-0000-0000-0000-000000000000) or a tenant-domain (custom domain or xyz.onmicrosoft.com).
+  
   ![Usage03](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure03-ManualConsent.png)
 
-5. The created service principal / app can be found in your Azure AD portal as shown below:
+5. You can find both, the created service principal as well as the service principal web app registered in your tenant through the Azure AD portal.
+  * The service principal web app will show up under "Applications my company uses"
+  * The created service principals will show up under "Applications my company owns"
+  
+  ![Usage04](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure04-FindingStuff.png)
   
 
 Deploying the App in your Subscription/Tenant
