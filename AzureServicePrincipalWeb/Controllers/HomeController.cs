@@ -56,6 +56,9 @@ namespace AzureServicePrincipalWeb.Controllers
         {
             return await SafeExecuteView(async () =>
             {
+                // Add the default values to the model
+                newPrincipal.TenantId = AuthenticationConfig.SessionItems.GraphTargetTenant;
+
                 // Validate required attributes for Service Principal Submission
                 if (string.IsNullOrEmpty(newPrincipal.Password)) ModelState.AddModelError("Password", "Missing password!");
                 if (string.IsNullOrEmpty(newPrincipal.DisplayName)) ModelState.AddModelError("DisplayName", "Missing display name for the principal!");

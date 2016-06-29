@@ -4,7 +4,33 @@ This web app allows the creation of a Service Principal using Azure Active Direc
 
 Usage of the App
 ----------------
-will come soon
+I've currently deployed the app in my  Azure Subscription as a Web App in free tier so you can use it for creating service principals in your own AD tenants. I try to keep it up'n'running as long as possible (hence free tier) and will try to improve the user experience over time (at the moment it's very simplictic).
+
+To use it follow these steps:
+1. Navigate to https://mszcoolserviceprincipal.azurewebsites.net/
+  * Note: SSL/https is a must, otherwise the sign-in will fail!
+
+2. Accept the consent dialog when signing into the application!
+  ![Usage01](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure01-Sign-In.png)
+
+3. Enter the data and hit save to create a new service principal.
+   * __Important Notes:__ 
+     * A Serivce Principal is always attached to an App-Object in Azure AD. Hence an App will be created as well.
+     * If you enter the URI of an existing App, DisplayName will be ignored and the existing App will be updated!
+     * If both, the App and Service Principal did exist, only a new password will be added!
+     * Always remember the password, there's no option to display the password at any time in the future, anymore!
+   * __DisplayName:__ that's the name of the App that is created to back the service principal in your AD. You'll see that in your Azure AD Portal.
+   * __AppIdUri:__ the unique URI for identifying the App in your directory.
+   * __Password:__ a password to use for the service principal.
+   ![Usage02](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure02-EnterData.png)
+
+4. The service principal web app tries to use your default tenant. If you want to switch the tenant, an additional consent is needed. Click the link 'Consent for different Tenant" below the Tenant ID! 
+  * This will redirect you to a view that allows entering a different tenant domain or ID.
+  * You can use both, the tenant ID (00000000-0000-0000-0000-000000000000) or a tenant-domain (custom domain or xyz.onmicrosoft.com).
+  ![Usage03](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure03-ManualConsent.png)
+
+5. The created service principal / app can be found in your Azure AD portal as shown below:
+  
 
 Deploying the App in your Subscription/Tenant
 ---------------------------------------------
