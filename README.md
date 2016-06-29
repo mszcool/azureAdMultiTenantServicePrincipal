@@ -6,6 +6,8 @@ Usage of the App
 ----------------
 I've currently deployed the app in my  Azure Subscription as a Web App in free tier so you can use it for creating service principals in your own AD tenants. I try to keep it up'n'running as long as possible (hence free tier) and will try to improve the user experience over time (at the moment it's very simplictic).
 
+__Important Note:__ The app requires executing actions against Graph API under the name of the signed-in user. That means, you either need to be a Global Admin or a Global Admin needs to on-board the app with an __Admin Consent__ before other users can make use of this app (without them being required to consent, again)! Please see the next section below in this doc!
+
 To use it follow these steps:
 1. Navigate to https://mszcoolserviceprincipal.azurewebsites.net/
   * Note: SSL/https is a must, otherwise the sign-in will fail!
@@ -39,7 +41,43 @@ To use it follow these steps:
   * The created service principals will show up under "Applications my company owns"
   
   ![Usage04](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure04-FindingStuff.png)
+
+
+Enabling the App for Non-Global Admin Users (Admin Consent)
+-----------------------------------------------------------
+If you want to make the app available to all users in your organization and want users to be able to create their own Service Principals, first a Global Admin needs to perfom an "Admin Consent" to make the application available in your organization. Please follow these steps for doing so:
+
+1. Log-on into the Service Principal App as an Administrator (Global Admin).
+
+2. I've added a new section that allows initating the Admin-Consent:
+  * This button is only visible if the app was able to detect a default tenant.
+  * If it did not detect a default tenant, then execute a manual consent first (typically needed when logging-in with a Microsoft Account)
+  * The button does not detect, if you are really an admin. If you try the consent without being an admin, Azure AD will deny the consent.
   
+  ![Usage05](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure05-AdminConsent1.png)
+
+3. On the next two screens, sign-in as the Global Admin for the target tenant and accept the consent.
+  * This will make the app available to all users in your tenant.
+  * No other user will be prompted with a consent-dialog after using the app, anymore!
+
+  ![Usage06](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure06-AdminConsent2.png) 
+
+
+Removing the app from your Azure AD tenant
+------------------------------------------
+You might want to remove the app from your tenant. For doing so, follow these steps:
+
+1. Navigate to the Azure AD management portal.
+
+2. Navigate to the "Applications" tab and select the application in the list.
+
+3. Click "Manage Access" in the bottom toolbar.
+
+  ![Usage07](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure07-Remove1.png)
+
+4. Click "Remove Access" in the dialog that's popping up.
+
+  ![Usage08](https://raw.githubusercontent.com/mszcool/azureAdMultiTenantServicePrincipal/master/Docs/Usage-Figure08-Remove2.png)
 
 Deploying the App in your Subscription/Tenant
 ---------------------------------------------
