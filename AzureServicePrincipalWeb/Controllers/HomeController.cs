@@ -22,8 +22,8 @@ namespace AzureServicePrincipalWeb.Controllers
         {
             return await SafeExecuteView(() =>
             {
-               // Create the basic model for the view
-               var newSp = new ServicePrincipalModel
+                // Create the basic model for the view
+                var newSp = new ServicePrincipalModel
                 {
                     UserMessage = "Please submit your request!",
                     AppId = Guid.Empty.ToString(),
@@ -32,8 +32,8 @@ namespace AzureServicePrincipalWeb.Controllers
                     SubmitSpEnabled = true
                 };
 
-               // If not all tokens are available, update the user action and update the user message
-               if (AuthenticationConfig.SessionItems.GraphAuthToken == null || AuthenticationConfig.SessionItems.ManagementAuthToken == null)
+                // If not all tokens are available, update the user action and update the user message
+                if (AuthenticationConfig.SessionItems.GraphAuthToken == null || AuthenticationConfig.SessionItems.ManagementAuthToken == null)
                 {
                     newSp.ShowSpDetails = false;
                     newSp.SubmitConsentEnabled = true;
@@ -46,6 +46,10 @@ namespace AzureServicePrincipalWeb.Controllers
 
                 }
 
+                // Admin-Consent is enabled, only, if a target tenant is given
+                newSp.SubmitAdminConsentEnabled = !string.IsNullOrEmpty(AuthenticationConfig.SessionItems.GraphTargetTenant);
+
+                // Show the view witht he model
                 return Task.FromResult<ActionResult>(View(newSp));
             });
         }
@@ -122,8 +126,8 @@ namespace AzureServicePrincipalWeb.Controllers
                 {
                     // Start the consent flow for the target tenant
                     var redirectUrl = string.Format("{0}{1}",
-                                            Request.Url.GetLeftPart(UriPartial.Authority),
-                                            Url.Action("CatchConsentResult"));
+                                        Request.Url.GetLeftPart(UriPartial.Authority),
+                                        Url.Action("CatchConsentResult"));
                     var authorizationUrl = await AuthenticationLogic.ConstructConsentUrlAsync
                                                     (
                                                         principalModel.ConsentAzureAdTenantDomainOrId,
@@ -137,10 +141,40 @@ namespace AzureServicePrincipalWeb.Controllers
                 {
                     principalModel.SubmitConsentEnabled = true;
                     principalModel.SubmitSpEnabled = false;
+                    principalModel.SubmitAdminConsentEnabled = false;
                     principalModel.UserMessage = "Please fix errors and try initiating the consent again!";
                     return View("Index", principalModel);
                 }
 
+            });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> InitiateAdminConsent(ServicePrincipalModel principalModel)
+        {
+            return await SafeExecuteView(async () =>
+            {
+                // Validate the basic input data
+                if (string.IsNullOrEmpty(AuthenticationConfig.SessionItems.GraphTargetTenant))
+                {
+                    throw new Exception("Cannot initate Admin Consent without a default tenant known!");
+                }
+                else
+                {
+                    // Start the consent flow for the target tenant
+                    var redirectUrl = string.Format("{0}{1}",
+                                        Request.Url.GetLeftPart(UriPartial.Authority),
+                                        Url.Action("CatchConsentResult"));
+                    var authorizationUrl = await AuthenticationLogic.ConstructConsentUrlAsync
+                                                    (
+                                                        principalModel.ConsentAzureAdTenantDomainOrId,
+                                                        AuthenticationConfig.ConfiguratinItems.ManagementAppUri,
+                                                        redirectUrl, 
+                                                        true
+                                                    );
+
+                    return Redirect(authorizationUrl);
+                }
             });
         }
 
@@ -191,7 +225,7 @@ namespace AzureServicePrincipalWeb.Controllers
             {
                 ViewBag.ErrorTitle = $"Error while Executing Action {Request.Path}";
                 ViewBag.ErrorMessage = ex.Message;
-                if(ex.InnerException != null)
+                if (ex.InnerException != null)
                 {
                     ViewBag.ErrorMessageDetails = ex.InnerException.Message;
                 }

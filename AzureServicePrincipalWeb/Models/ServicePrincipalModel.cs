@@ -16,6 +16,7 @@ namespace AzureServicePrincipalWeb.Models
         public bool ShowSpDetails { get; set; }
         public bool SubmitSpEnabled { get; set; }
         public bool SubmitConsentEnabled { get; set; }
+        public bool SubmitAdminConsentEnabled { get; set; }
         public string ConsentAzureAdTenantDomainOrId { get; set; }
     }
 }

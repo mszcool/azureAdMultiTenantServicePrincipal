@@ -52,7 +52,7 @@ namespace AzureServicePrincipalWeb.BusinessLogic
             AuthenticationConfig.SessionItems.GraphTargetTenant = graphToken.TenantId;
         }
 
-        public static async Task<string> ConstructConsentUrlAsync(string tenantDomainOrId, string targetResourceUri, string redirectUrl)
+        public static async Task<string> ConstructConsentUrlAsync(string tenantDomainOrId, string targetResourceUri, string redirectUrl, bool isAdmin = false)
         {
             var authorizationUrl = string.Empty;
             if (!string.IsNullOrEmpty(targetResourceUri))
@@ -81,6 +81,11 @@ namespace AzureServicePrincipalWeb.BusinessLogic
                     redirectUrl
                 );
 
+            }
+
+            if(isAdmin)
+            {
+                authorizationUrl += "&prompt=admin_consent";
             }
 
             return await Task.FromResult<string>(authorizationUrl);

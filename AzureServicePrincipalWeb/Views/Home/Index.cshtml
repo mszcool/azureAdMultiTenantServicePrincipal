@@ -83,8 +83,23 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" style='visibility: @(Model.SubmitSpEnabled ? "visible" : "hidden")' formaction="/Home/SubmitServicePrincipal" />
-                <input type="submit" value="Init Consent" class="btn" style='visibility: @(Model.SubmitConsentEnabled ? "visible": "hidden")' formaction="/Home/InitiateConsent" />
+                <input type="submit" id="Save" value="Save" class="btn btn-default" style='visibility: @(Model.SubmitSpEnabled ? "visible" : "hidden")' formaction="/Home/SubmitServicePrincipal" />
+                <input type="submit" id="UserConsent" value="Start Manual User-Consent" class="btn" style='visibility: @(Model.SubmitConsentEnabled ? "visible": "hidden")' formaction="/Home/InitiateConsent" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <h4>Administrative Consent:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item">This application requires accessing Azure Active Directory (Graph API) under the name of the user!</li>
+                    <li class="list-group-item">That type of delegation requires either administrative permissions (Global Admin role) or a consent done by an Admin to enable the application for ordinary Azure AD Users (User role).</li>
+                    <li class="list-group-item">If you want to enable creation of service principals, a Global Admin first needs to execute the Admin Consent by clicking the button below!</li>
+                </ul>
+                <br/>
+                <input type="submit" id="AdminConsent" value="Start Admin-Consent (as Global Admin)" class="btn btn-warning" formaction="/Home/InitiateAdminConsent" disabled='@(Model.SubmitAdminConsentEnabled ? null : "disabled")' />
             </div>
         </div>
     </div>
