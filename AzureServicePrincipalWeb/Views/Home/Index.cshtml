@@ -43,6 +43,7 @@
                 @Html.LabelFor(model => model.TenantId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DisplayFor(model => model.TenantId)
+                    <br />
                     @Html.ActionLink("Consent for different Tenant", "ConsentReset");
                 </div>
             </div>
