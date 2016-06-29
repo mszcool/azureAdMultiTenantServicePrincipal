@@ -9,6 +9,7 @@ I've currently deployed the app in my  Azure Subscription as a Web App in free t
 To use it follow these steps:
 1. Navigate to https://mszcoolserviceprincipal.azurewebsites.net/
   * Note: SSL/https is a must, otherwise the sign-in will fail!
+  * __Important:__ When using "Microsoft Accounts" (MSA, formerly live ID), you need to start your browser in-private and manually consent by entering a TenantID/Tenant Domain (see step 4).
 
 2. Accept the consent dialog when signing into the application!
   
