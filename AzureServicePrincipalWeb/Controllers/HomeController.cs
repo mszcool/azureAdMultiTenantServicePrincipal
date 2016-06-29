@@ -58,7 +58,6 @@ namespace AzureServicePrincipalWeb.Controllers
             {
                 // Validate required attributes for Service Principal Submission
                 if (string.IsNullOrEmpty(newPrincipal.Password)) ModelState.AddModelError("Password", "Missing password!");
-                if (string.IsNullOrEmpty(newPrincipal.TenantId)) ModelState.AddModelError("TenantId", "Missing TenantId!");
                 if (string.IsNullOrEmpty(newPrincipal.DisplayName)) ModelState.AddModelError("DisplayName", "Missing display name for the principal!");
                 if (string.IsNullOrEmpty(newPrincipal.AppIdUri)) ModelState.AddModelError("AppIdUri", "Missing AppId Uri for the app created for the principal!");
 
@@ -97,6 +96,15 @@ namespace AzureServicePrincipalWeb.Controllers
                 newPrincipal.SubmitConsentEnabled = false;
                 return View("Index", newPrincipal);
             });
+        }
+
+        public async Task<ActionResult> ConsentReset()
+        {
+            AuthenticationConfig.SessionItems.AuthCode = null;
+            AuthenticationConfig.SessionItems.GraphAuthToken = null;
+            AuthenticationConfig.SessionItems.GraphTargetTenant = null;
+            AuthenticationConfig.SessionItems.ManagementAuthToken = null;
+            return await Task.FromResult(RedirectToAction("Index"));
         }
 
         [HttpPost]
