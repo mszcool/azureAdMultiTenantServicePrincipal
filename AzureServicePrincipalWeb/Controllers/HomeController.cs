@@ -167,7 +167,7 @@ namespace AzureServicePrincipalWeb.Controllers
                                         Url.Action("CatchConsentResult"));
                     var authorizationUrl = await AuthenticationLogic.ConstructConsentUrlAsync
                                                     (
-                                                        principalModel.ConsentAzureAdTenantDomainOrId,
+                                                        AuthenticationConfig.SessionItems.GraphTargetTenant,
                                                         AuthenticationConfig.ConfiguratinItems.ManagementAppUri,
                                                         redirectUrl, 
                                                         true
