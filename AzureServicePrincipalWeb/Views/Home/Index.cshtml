@@ -99,7 +99,14 @@
                     <li class="list-group-item">If you want to enable creation of service principals, a Global Admin first needs to execute the Admin Consent by clicking the button below!</li>
                 </ul>
                 <br/>
-                <input type="submit" id="AdminConsent" value="Start Admin-Consent (as Global Admin)" class="btn btn-warning" formaction="/Home/InitiateAdminConsent" disabled='@(Model.SubmitAdminConsentEnabled ? null : "disabled")' />
+                @if (Model.SubmitAdminConsentEnabled)
+                {
+                    <input type="submit" id="AdminConsent" value="Start Admin-Consent (as Global Admin)" class="btn btn-warning" formaction="/Home/InitiateAdminConsent" />
+                }
+                else
+                {
+                    <p>Not possible since tenant is not detected (see tenant id above)!</p>
+                }
             </div>
         </div>
     </div>
