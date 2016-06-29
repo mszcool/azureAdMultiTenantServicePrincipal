@@ -101,6 +101,7 @@ namespace AzureServicePrincipalWeb.Controllers
                 newPrincipal.SubmitSpEnabled = true;
                 newPrincipal.ShowSpDetails = true;
                 newPrincipal.SubmitConsentEnabled = false;
+                newPrincipal.SubmitAdminConsentEnabled = true;
                 return View("Index", newPrincipal);
             });
         }
