@@ -1,5 +1,6 @@
 ﻿using AzureServicePrincipalWeb.BusinessLogic;
 using AzureServicePrincipalWeb.Models;
+using AzureServicePrincipalWeb.ExtensionTypes;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace AzureServicePrincipalWeb.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            return await SafeExecuteView(() =>
+            return await this.SafeExecuteView(() =>
             {
                 // Create the basic model for the view
                 var newSp = new ServicePrincipalModel
@@ -51,14 +52,15 @@ namespace AzureServicePrincipalWeb.Controllers
 
                 // Show the view witht he model
                 return Task.FromResult<ActionResult>(View(newSp));
-            });
+            }, 
+            () => { return View("Error"); });
         }
 
 
         [HttpPost]
         public async Task<ActionResult> SubmitServicePrincipal(ServicePrincipalModel newPrincipal)
         {
-            return await SafeExecuteView(async () =>
+            return await this.SafeExecuteView(async () =>
             {
                 // Add the default values to the model
                 newPrincipal.TenantId = AuthenticationConfig.SessionItems.GraphTargetTenant;
@@ -103,7 +105,8 @@ namespace AzureServicePrincipalWeb.Controllers
                 newPrincipal.SubmitConsentEnabled = false;
                 newPrincipal.SubmitAdminConsentEnabled = true;
                 return View("Index", newPrincipal);
-            });
+            },
+            () => { return View("Error"); });
         }
 
         public async Task<ActionResult> ConsentReset()
@@ -118,7 +121,7 @@ namespace AzureServicePrincipalWeb.Controllers
         [HttpPost]
         public async Task<ActionResult> InitiateConsent(ServicePrincipalModel principalModel)
         {
-            return await SafeExecuteView(async () =>
+            return await this.SafeExecuteView(async () =>
             {
                 // Validate the basic input data
                 if (string.IsNullOrEmpty(principalModel.ConsentAzureAdTenantDomainOrId)) ModelState.AddModelError("ConsentAzureAdTenantDomainOrId", "Please enter a Tenant ID (GUID) or a Tenant Domain (e.g. xyz.onmicrosoft.com) for initiaiting the consent!");
@@ -147,13 +150,14 @@ namespace AzureServicePrincipalWeb.Controllers
                     return View("Index", principalModel);
                 }
 
-            });
+            },
+            () => { return View("Error"); });
         }
 
         [HttpPost]
         public async Task<ActionResult> InitiateAdminConsent(ServicePrincipalModel principalModel)
         {
-            return await SafeExecuteView(async () =>
+            return await this.SafeExecuteView(async () =>
             {
                 // Validate the basic input data
                 if (string.IsNullOrEmpty(AuthenticationConfig.SessionItems.GraphTargetTenant))
@@ -170,32 +174,47 @@ namespace AzureServicePrincipalWeb.Controllers
                                                     (
                                                         AuthenticationConfig.SessionItems.GraphTargetTenant,
                                                         AuthenticationConfig.ConfiguratinItems.ManagementAppUri,
-                                                        redirectUrl, 
+                                                        redirectUrl,
                                                         true
                                                     );
 
                     return Redirect(authorizationUrl);
                 }
-            });
+            },
+            () => { return View("Error"); });
         }
 
         [HttpGet]
-        public async Task<ActionResult> CatchConsentResult(string code)
+        public async Task<ActionResult> CatchConsentResult(string code, string error, string error_description)
         {
-            return await SafeExecuteView(async () =>
+            return await this.SafeExecuteView(async () =>
             {
-                // Capture the code and the last redirect URL for this session
-                AuthenticationConfig.SessionItems.AuthCode = code;
-                AuthenticationConfig.SessionItems.AuthCodeLastTokenRequestUrl =
-                                new Uri(string.Format("{0}{1}", Request.Url.GetLeftPart(UriPartial.Authority),
-                                                                Url.Action("CatchConsentResult")));
+                if (code != null)
+                {
+                    // Capture the code and the last redirect URL for this session
+                    AuthenticationConfig.SessionItems.AuthCode = code;
+                    AuthenticationConfig.SessionItems.AuthCodeLastTokenRequestUrl =
+                                    new Uri(string.Format("{0}{1}", Request.Url.GetLeftPart(UriPartial.Authority),
+                                                                    Url.Action("CatchConsentResult")));
 
-                // Try get the tokens
-                await AuthenticationLogic.GetTokensForNeededServices();
+                    // Try get the tokens
+                    await AuthenticationLogic.GetTokensForNeededServices();
 
-                // Go back to the index action
-                return RedirectToAction("Index");
-            });
+                    // Go back to the index action
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    if (error != null) ViewBag.ErrorTitle = error;
+                    else ViewBag.ErrorTitle = "Unknown Error";
+
+                    if (error_description != null) ViewBag.ErrorMessage = error_description;
+                    else ViewBag.ErrorMessage = "Please verify the app configuration in your AAD or if you have access to an Azure Subscription!";
+
+                    return View("Error");
+                }
+            },
+            () => { return View("Error"); });
         }
 
         [HttpGet]
@@ -213,27 +232,5 @@ namespace AzureServicePrincipalWeb.Controllers
 
             return View();
         }
-
-        #region Helper Method for save View Handling
-
-        public async Task<ActionResult> SafeExecuteView(Func<Task<ActionResult>> body)
-        {
-            try
-            {
-                return await body();
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorTitle = $"Error while Executing Action {Request.Path}";
-                ViewBag.ErrorMessage = ex.Message;
-                if (ex.InnerException != null)
-                {
-                    ViewBag.ErrorMessageDetails = ex.InnerException.Message;
-                }
-                return await Task.FromResult(View("Error"));
-            }
-        }
-
-        #endregion
     }
 }

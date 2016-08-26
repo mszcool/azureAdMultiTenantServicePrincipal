@@ -50,6 +50,14 @@ namespace AzureServicePrincipalWeb.BusinessLogic
                     return ConfigurationManager.AppSettings["ida:ManagementAppUri"];
                 }
             }
+
+            public static string ManagementApiVersion
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["ida:ManagementApiVersion"];
+                }
+            }
         }
 
         public static class SessionItems
